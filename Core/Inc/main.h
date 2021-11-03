@@ -70,6 +70,10 @@ typedef enum {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 #define ENTER '\r'
+#define LED_ON_STR "LED ON"
+#define LED_ON_STR_LEN 7
+#define LED_OFF_STR "LED OFF"
+#define LED_OFF_STR_LEN 8
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -77,7 +81,7 @@ void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
 void USART_ProcessRxData(uint8_t chr);
-void ClearBuffer(uint8_t ptr[], uint16_t lenght);
+void USART2_TransmitData(USART_TypeDef *USARTx, uint8_t ptr[], uint16_t lenght);
 /* USER CODE END EFP */
 
 /* Private defines -----------------------------------------------------------*/
@@ -106,7 +110,7 @@ void ClearBuffer(uint8_t ptr[], uint16_t lenght);
                                                                  0 bit  for subpriority */
 #endif
 /* USER CODE BEGIN Private defines */
-RX_UART_DATA USART2_DataBufferIndexer;
+RX_UART_DATA RXDataIndexer;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

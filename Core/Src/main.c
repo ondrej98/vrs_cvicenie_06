@@ -45,7 +45,7 @@
 
 /* USER CODE BEGIN PV */
 
-extern RX_UART_DATA USART2_DataBufferIndexer;
+extern RX_UART_DATA RXDataIndexer;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -66,7 +66,7 @@ void SystemClock_Config(void);
 int main(void) {
 	/* USER CODE BEGIN 1 */
 
-	USART2_DataBufferIndexer = RX_UART_DATA_None;
+	RXDataIndexer = RX_UART_DATA_None;
 	/* USER CODE END 1 */
 
 	/* MCU Configuration--------------------------------------------------------*/
@@ -102,9 +102,13 @@ int main(void) {
 	/* USER CODE BEGIN WHILE */
 	while (1) {
 		/* USER CODE END WHILE */
-
 		/* USER CODE BEGIN 3 */
-		LL_USART_TransmitData8(USART2, Value);
+		if (LL_GPIO_ReadOutputPort(LED_GPIO_Port) & (1 << LED_Pin)) {
+			USART2_TransmitData(USART2,(uint8_t *)LED_ON_STR,LED_ON_STR_LEN);
+		} else {
+			USART2_TransmitData(USART2,(uint8_t *)LED_OFF_STR,LED_OFF_STR_LEN);
+		}
+		LL_mDelay(5000);
 	}
 	/* USER CODE END 3 */
 }
@@ -146,59 +150,58 @@ void SystemClock_Config(void) {
 
 /* USER CODE BEGIN 4 */
 void USART_ProcessRxData(uint8_t chr) {
-	switch (USART2_DataBufferIndexer) {
+	switch (RXDataIndexer) {
 	default:
 		if (chr == 'l')
-			USART2_DataBufferIndexer = RX_UART_DATA_l;
+			RXDataIndexer = RX_UART_DATA_l;
 		break;
 	case RX_UART_DATA_l:
 		if (chr == 'e')
-			USART2_DataBufferIndexer = RX_UART_DATA_le;
+			RXDataIndexer = RX_UART_DATA_le;
 		else if (chr != ENTER)
-			USART2_DataBufferIndexer = RX_UART_DATA_None;
+			RXDataIndexer = RX_UART_DATA_None;
 		break;
 	case RX_UART_DATA_le:
 		if (chr == 'd')
-			USART2_DataBufferIndexer = RX_UART_DATA_led;
+			RXDataIndexer = RX_UART_DATA_led;
 		else if (chr != ENTER)
-			USART2_DataBufferIndexer = RX_UART_DATA_None;
+			RXDataIndexer = RX_UART_DATA_None;
 		break;
 	case RX_UART_DATA_led:
 		if (chr == 'O')
-			USART2_DataBufferIndexer = RX_UART_DATA_ledO;
+			RXDataIndexer = RX_UART_DATA_ledO;
 		else if (chr != ENTER)
-			USART2_DataBufferIndexer = RX_UART_DATA_None;
+			RXDataIndexer = RX_UART_DATA_None;
 		break;
 	case RX_UART_DATA_ledO:
 		if (chr == 'N')
-			USART2_DataBufferIndexer = RX_UART_DATA_ledON;
+			RXDataIndexer = RX_UART_DATA_ledON;
 		else if (chr == 'F')
-			USART2_DataBufferIndexer = RX_UART_DATA_ledOF;
+			RXDataIndexer = RX_UART_DATA_ledOF;
 		else if (chr != ENTER)
-			USART2_DataBufferIndexer = RX_UART_DATA_None;
+			RXDataIndexer = RX_UART_DATA_None;
 		break;
 	case RX_UART_DATA_ledON:
 		LL_GPIO_SetOutputPin(LED_GPIO_Port, LED_Pin);
-		USART2_DataBufferIndexer = RX_UART_DATA_None;
+		RXDataIndexer = RX_UART_DATA_None;
 		break;
 	case RX_UART_DATA_ledOF:
 		if (chr == 'F')
-			USART2_DataBufferIndexer = RX_UART_DATA_ledOFF;
+			RXDataIndexer = RX_UART_DATA_ledOFF;
 		else if (chr != ENTER)
-			USART2_DataBufferIndexer = RX_UART_DATA_None;
+			RXDataIndexer = RX_UART_DATA_None;
 		break;
 	case RX_UART_DATA_ledOFF:
 		LL_GPIO_ResetOutputPin(LED_GPIO_Port, LED_Pin);
-		USART2_DataBufferIndexer = RX_UART_DATA_None;
+		RXDataIndexer = RX_UART_DATA_None;
 		break;
 
 	}
 }
-
-void ClearBuffer(uint8_t ptr[], uint16_t lenght) {
-	if (ptr != 0) {
+void USART2_TransmitData(USART_TypeDef *USARTx, uint8_t ptr[], uint16_t lenght) {
+	if (ptr != NULL) {
 		for (uint16_t i = 0; i < lenght; i++) {
-			ptr[i] = 0;
+			LL_USART_TransmitData8(USARTx, ptr[i]);
 		}
 	}
 }

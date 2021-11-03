@@ -61,8 +61,8 @@ all: main-build
 main-build: vrs_cvicenie_06.elf secondary-outputs
 
 # Tool invocations
-vrs_cvicenie_06.elf: $(OBJS) $(USER_OBJS) C:\ST\projects\vrs_cvicenie_06\STM32F303K8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "vrs_cvicenie_06.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"C:\ST\projects\vrs_cvicenie_06\STM32F303K8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="vrs_cvicenie_06.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+vrs_cvicenie_06.elf: $(OBJS) $(USER_OBJS) E:\GitHub\ondrej98\vrs_cvicenie_06\STM32F303K8TX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "vrs_cvicenie_06.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"E:\GitHub\ondrej98\vrs_cvicenie_06\STM32F303K8TX_FLASH.ld" --specs=nosys.specs -Wl,-Map="vrs_cvicenie_06.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
