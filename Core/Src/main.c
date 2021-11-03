@@ -202,6 +202,7 @@ void USART2_TransmitData(USART_TypeDef *USARTx, uint8_t ptr[], uint16_t lenght) 
 	if (ptr != NULL) {
 		for (uint16_t i = 0; i < lenght; i++) {
 			LL_USART_TransmitData8(USARTx, ptr[i]);
+			LL_mDelay(5);
 		}
 	}
 }
