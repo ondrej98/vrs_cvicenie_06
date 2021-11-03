@@ -42,9 +42,10 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+
 /* USER CODE BEGIN PV */
-extern uint8_t USART2_DataBuffer[256];
-extern uint8_t USART2_DataBufferIndexer;
+
+extern RX_UART_DATA USART2_DataBufferIndexer;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -55,8 +56,7 @@ void SystemClock_Config(void);
 
 /* Private user code ---------------------------------------------------------*/
 /* USER CODE BEGIN 0 */
-const uint8_t USART_LED_ON[] = "ledON";
-const uint8_t USART_LED_OFF[] = "ledOFF";
+
 /* USER CODE END 0 */
 
 /**
@@ -65,8 +65,8 @@ const uint8_t USART_LED_OFF[] = "ledOFF";
  */
 int main(void) {
 	/* USER CODE BEGIN 1 */
-	ClearBuffer(USART2_DataBuffer, 256);
-	USART2_DataBufferIndexer = 0;
+
+	USART2_DataBufferIndexer = RX_UART_DATA_None;
 	/* USER CODE END 1 */
 
 	/* MCU Configuration--------------------------------------------------------*/
@@ -95,15 +95,16 @@ int main(void) {
 	MX_GPIO_Init();
 	MX_USART2_UART_Init();
 	/* USER CODE BEGIN 2 */
-
+	USART2_RegisterCallback(USART_ProcessRxData);
 	/* USER CODE END 2 */
 
 	/* Infinite loop */
 	/* USER CODE BEGIN WHILE */
 	while (1) {
 		/* USER CODE END WHILE */
-		/* USER CODE BEGIN 3 */
 
+		/* USER CODE BEGIN 3 */
+		LL_USART_TransmitData8(USART2, Value);
 	}
 	/* USER CODE END 3 */
 }
@@ -123,33 +124,74 @@ void SystemClock_Config(void) {
 
 	}
 	LL_RCC_HSI_SetCalibTrimming(16);
+	LL_RCC_PLL_ConfigDomain_SYS(LL_RCC_PLLSOURCE_HSI_DIV_2, LL_RCC_PLL_MUL_5);
+	LL_RCC_PLL_Enable();
+
+	/* Wait till PLL is ready */
+	while (LL_RCC_PLL_IsReady() != 1) {
+
+	}
 	LL_RCC_SetAHBPrescaler(LL_RCC_SYSCLK_DIV_1);
 	LL_RCC_SetAPB1Prescaler(LL_RCC_APB1_DIV_1);
 	LL_RCC_SetAPB2Prescaler(LL_RCC_APB2_DIV_1);
-	LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_HSI);
+	LL_RCC_SetSysClkSource(LL_RCC_SYS_CLKSOURCE_PLL);
 
 	/* Wait till System clock is ready */
-	while (LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_HSI) {
+	while (LL_RCC_GetSysClkSource() != LL_RCC_SYS_CLKSOURCE_STATUS_PLL) {
 
 	}
-	LL_Init1msTick(8000000);
-	LL_SetSystemCoreClock(8000000);
+	LL_Init1msTick(20000000);
+	LL_SetSystemCoreClock(20000000);
 }
 
 /* USER CODE BEGIN 4 */
 void USART_ProcessRxData(uint8_t chr) {
-	if(chr != '\n' || USART2_DataBufferIndexer >= USART_BUFFER_SIZE){
-		USART2_DataBuffer[USART2_DataBufferIndexer++] = chr;
-	}
-	else{
-		if(strstr((char*) USART2_DataBuffer,(char*) USART_LED_ON) != NULL){
-			LL_GPIO_SetOutputPin(LED_GPIO_Port, LED_Pin);
-		}
-		else if(strstr((char*) USART2_DataBuffer,(char*) USART_LED_OFF) != NULL){
-			LL_GPIO_ResetOutputPin(LED_GPIO_Port, LED_Pin);
-		}
-		ClearBuffer(USART2_DataBuffer, USART_BUFFER_SIZE);
-		USART2_DataBufferIndexer = 0;
+	switch (USART2_DataBufferIndexer) {
+	default:
+		if (chr == 'l')
+			USART2_DataBufferIndexer = RX_UART_DATA_l;
+		break;
+	case RX_UART_DATA_l:
+		if (chr == 'e')
+			USART2_DataBufferIndexer = RX_UART_DATA_le;
+		else if (chr != ENTER)
+			USART2_DataBufferIndexer = RX_UART_DATA_None;
+		break;
+	case RX_UART_DATA_le:
+		if (chr == 'd')
+			USART2_DataBufferIndexer = RX_UART_DATA_led;
+		else if (chr != ENTER)
+			USART2_DataBufferIndexer = RX_UART_DATA_None;
+		break;
+	case RX_UART_DATA_led:
+		if (chr == 'O')
+			USART2_DataBufferIndexer = RX_UART_DATA_ledO;
+		else if (chr != ENTER)
+			USART2_DataBufferIndexer = RX_UART_DATA_None;
+		break;
+	case RX_UART_DATA_ledO:
+		if (chr == 'N')
+			USART2_DataBufferIndexer = RX_UART_DATA_ledON;
+		else if (chr == 'F')
+			USART2_DataBufferIndexer = RX_UART_DATA_ledOF;
+		else if (chr != ENTER)
+			USART2_DataBufferIndexer = RX_UART_DATA_None;
+		break;
+	case RX_UART_DATA_ledON:
+		LL_GPIO_SetOutputPin(LED_GPIO_Port, LED_Pin);
+		USART2_DataBufferIndexer = RX_UART_DATA_None;
+		break;
+	case RX_UART_DATA_ledOF:
+		if (chr == 'F')
+			USART2_DataBufferIndexer = RX_UART_DATA_ledOFF;
+		else if (chr != ENTER)
+			USART2_DataBufferIndexer = RX_UART_DATA_None;
+		break;
+	case RX_UART_DATA_ledOFF:
+		LL_GPIO_ResetOutputPin(LED_GPIO_Port, LED_Pin);
+		USART2_DataBufferIndexer = RX_UART_DATA_None;
+		break;
+
 	}
 }
 

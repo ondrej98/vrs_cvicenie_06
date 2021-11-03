@@ -51,6 +51,16 @@ extern "C" {
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
+typedef enum {
+	RX_UART_DATA_None = 0,
+	RX_UART_DATA_l = 1,
+	RX_UART_DATA_le = 2,
+	RX_UART_DATA_led = 3,
+	RX_UART_DATA_ledO = 4,
+	RX_UART_DATA_ledON = 5,
+	RX_UART_DATA_ledOF = 6,
+	RX_UART_DATA_ledOFF = 7,
+}RX_UART_DATA;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -59,7 +69,7 @@ extern "C" {
 
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
-#define  USART_BUFFER_SIZE 256
+#define ENTER '\r'
 /* USER CODE END EM */
 
 /* Exported functions prototypes ---------------------------------------------*/
@@ -96,8 +106,7 @@ void ClearBuffer(uint8_t ptr[], uint16_t lenght);
                                                                  0 bit  for subpriority */
 #endif
 /* USER CODE BEGIN Private defines */
-uint8_t USART2_DataBuffer[USART_BUFFER_SIZE];
-uint8_t USART2_DataBufferIndexer;
+RX_UART_DATA USART2_DataBufferIndexer;
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus
