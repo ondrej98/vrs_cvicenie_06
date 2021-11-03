@@ -64,7 +64,9 @@ int main()
 - príklad na callback funkciu je v ukážkovom projekte pre toto cvičenie (obsluhuje prerušenie od USART)
 
 # Zadanie
-- naprogramujte MCU tak, aby ste prikazmi prijatými cez USART vedeli ovladat LED
-- ak MCU prijme cez USART príkaz 'ledON' - LED sa vypne
-- ak MCU prijme cez USART príkaz 'ledOFF' - LED sa zapne
-- s periodou 1s posielajte cez USART aktualny stav LED spet do PC
+- naprogramujte MCU tak, aby ste prikazmi prijatými cez USART vedeli ovladat LED (na Nucleo doske)
+- ak MCU prijme cez USART príkaz 'ledON' - LED sa zapne
+- ak MCU prijme cez USART príkaz 'ledOFF' - LED sa vypne
+    - #### Znaky prikazu musia byt prijate bezprostredne zasebou.
+    - #### Nezabudnite na znak ukoncenia riadku, ktory je odoslany spolu s textom prikazu. Napr. ak je z terminalu odoslany retazec "led" a nasladne retazec "ON", tak prikaz "ledON" musi byt spracovany ako validny.
+- s periodou 5 sekund posielajte cez USART aktualny stav LED spet do PC (nieco v style "LED ON" alebo "LED state: 0/1").
