@@ -70,9 +70,9 @@ typedef enum {
 /* Exported macro ------------------------------------------------------------*/
 /* USER CODE BEGIN EM */
 #define ENTER '\r'
-#define LED_ON_STR "LED ON\n"
+#define LED_ON_STR "LED ON\r\n"
 #define LED_ON_STR_LEN 8
-#define LED_OFF_STR "LED OFF\n"
+#define LED_OFF_STR "LED OFF\r\n"
 #define LED_OFF_STR_LEN 9
 /* USER CODE END EM */
 

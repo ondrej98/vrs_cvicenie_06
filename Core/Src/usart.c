@@ -22,6 +22,7 @@
 
 /* USER CODE BEGIN 0 */
 static void (*USART2_Call_Back)(uint8_t) = 0;
+
 /* USER CODE END 0 */
 
 /* USART2 init function */
@@ -73,6 +74,7 @@ void MX_USART2_UART_Init(void)
   LL_USART_Enable(USART2);
   /* USER CODE BEGIN USART2_Init 2 */
 	LL_USART_EnableIT_RXNE(USART2);
+
   /* USER CODE END USART2_Init 2 */
 
 }
@@ -87,6 +89,8 @@ void USART2_HandlerRx(uint8_t chr) {
 		USART2_Call_Back(chr);
 	}
 }
+
+
 /* USER CODE END 1 */
 
 /************************ (C) COPYRIGHT STMicroelectronics *****END OF FILE****/

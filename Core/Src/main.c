@@ -44,8 +44,10 @@
 /* Private variables ---------------------------------------------------------*/
 
 /* USER CODE BEGIN PV */
-
+uint8_t ledState = 0;
 extern RX_UART_DATA RXDataIndexer;
+extern uint8_t USART2_TX_IsEmpty;
+
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -65,7 +67,6 @@ void SystemClock_Config(void);
  */
 int main(void) {
 	/* USER CODE BEGIN 1 */
-
 	RXDataIndexer = RX_UART_DATA_None;
 	/* USER CODE END 1 */
 
@@ -103,13 +104,15 @@ int main(void) {
 	while (1) {
 		/* USER CODE END WHILE */
 		/* USER CODE BEGIN 3 */
-		if (LL_GPIO_ReadOutputPort(LED_GPIO_Port) & (1 << LED_Pin)) {
-			USART2_TransmitData(USART2,(uint8_t *)LED_ON_STR,LED_ON_STR_LEN);
+		if (ledState == 1) {
+			USART2_TransmitData(USART2, (uint8_t*) LED_ON_STR, LED_ON_STR_LEN);
 		} else {
-			USART2_TransmitData(USART2,(uint8_t *)LED_OFF_STR,LED_OFF_STR_LEN);
+			USART2_TransmitData(USART2, (uint8_t*) LED_OFF_STR,
+					LED_OFF_STR_LEN);
 		}
 		LL_mDelay(5000);
 	}
+
 	/* USER CODE END 3 */
 }
 
@@ -183,6 +186,7 @@ void USART_ProcessRxData(uint8_t chr) {
 		break;
 	case RX_UART_DATA_ledON:
 		LL_GPIO_SetOutputPin(LED_GPIO_Port, LED_Pin);
+		ledState = 1;
 		RXDataIndexer = RX_UART_DATA_None;
 		break;
 	case RX_UART_DATA_ledOF:
@@ -194,6 +198,7 @@ void USART_ProcessRxData(uint8_t chr) {
 	case RX_UART_DATA_ledOFF:
 		LL_GPIO_ResetOutputPin(LED_GPIO_Port, LED_Pin);
 		RXDataIndexer = RX_UART_DATA_None;
+		ledState = 0;
 		break;
 
 	}

@@ -8,6 +8,6 @@ stm32f3xx_ll_usart.h:532:22:LL_USART_Enable	16	static
 stm32f3xx_ll_usart.h:2255:22:LL_USART_ConfigAsyncMode	16	static
 stm32f3xx_ll_usart.h:2936:22:LL_USART_EnableIT_RXNE	40	static,ignoring_inline_asm
 stm32f3xx_ll_usart.h:3190:22:LL_USART_DisableIT_CTS	40	static,ignoring_inline_asm
-usart.c:29:6:MX_USART2_UART_Init	64	static
-usart.c:81:6:USART2_RegisterCallback	16	static
-usart.c:85:6:USART2_HandlerRx	16	static
+usart.c:30:6:MX_USART2_UART_Init	64	static
+usart.c:83:6:USART2_RegisterCallback	16	static
+usart.c:87:6:USART2_HandlerRx	16	static

@@ -40,6 +40,7 @@ void MX_USART2_UART_Init(void);
 /* USER CODE BEGIN Prototypes */
 void USART2_RegisterCallback(void *callback);
 void USART2_HandlerRx(uint8_t chr);
+
 /* USER CODE END Prototypes */
 
 #ifdef __cplusplus
